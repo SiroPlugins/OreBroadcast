@@ -1,7 +1,6 @@
 package be.bendem.bukkit.orebroadcast;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
 import java.util.UUID;
@@ -13,25 +12,21 @@ import java.util.UUID;
  */
 public class SafeBlock {
 
-    public final int  x;
-    public final int  y;
-    public final int  z;
-    public final UUID world;
+    private final int  x;
+    private final int  y;
+    private final int  z;
+    private final UUID world;
 
-    public SafeBlock(Block block) {
+    SafeBlock(Block block) {
         this(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
     }
 
-    public SafeBlock(int x, int y, int z, UUID world) {
+    private SafeBlock(int x, int y, int z, UUID world) {
         Validate.notNull(world);
         this.x = x;
         this.y = y;
         this.z = z;
         this.world = world;
-    }
-
-    public Block getBlock() {
-        return Bukkit.getWorld(world).getBlockAt(x, y, z);
     }
 
     @Override

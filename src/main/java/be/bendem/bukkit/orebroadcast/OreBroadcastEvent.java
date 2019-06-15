@@ -18,9 +18,8 @@ public class OreBroadcastEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private       String format;
-    private final Player source;
     private final Block blockMined;
-    private final Set<Player> recipients;
+    private final Player source;
     private final Set<Block> vein;
     private boolean cancelled = false;
 
@@ -30,14 +29,12 @@ public class OreBroadcastEvent extends Event implements Cancellable {
      * @param format the format of the message
      * @param source the player that mined the block
      * @param blockMined the block which was mined by the player
-     * @param recipients the players that will receive this format
      * @param vein the complete vein containing the block mined
      */
-    public OreBroadcastEvent(String format, Player source, Block blockMined, Set<Player> recipients, Set<Block> vein) {
+    public OreBroadcastEvent(String format, Player source, Block blockMined, Set<Block> vein) {
         this.format = format;
         this.source = source;
         this.blockMined = blockMined;
-        this.recipients = recipients;
         this.vein = vein;
     }
 
@@ -61,41 +58,12 @@ public class OreBroadcastEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets the format use for the message
-     *
-     * @param format the new format for the message
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    /**
      * Gets the player who mined the block.
      *
      * @return the player who mined the block
      */
     public Player getSource() {
         return this.source;
-    }
-
-    /**
-     * Gets the block which was mined by the player, triggering the event
-     *
-     * @return the block mined
-     */
-    public Block getBlockMined() {
-        return blockMined;
-    }
-
-    /**
-     * Gets the recipients that this message will be sent to.
-     * <p>
-     * You can modify this set directly
-     *
-     * @return the players that will receive this message
-     */
-    public Set<Player> getRecipients() {
-        return recipients;
     }
 
     /**
@@ -110,10 +78,20 @@ public class OreBroadcastEvent extends Event implements Cancellable {
     }
 
     /**
+     * Gets the block which was mined by the player, triggering the event
+     *
+     * @return the block mined
+     */
+    public Block getBlockMined() {
+        return blockMined;
+    }
+
+    /**
      * Gets the cancellation state of the event.
      *
      * @return true if the event is cancelled
      */
+
     @Override
     public boolean isCancelled() {
         return cancelled;
@@ -137,9 +115,4 @@ public class OreBroadcastEvent extends Event implements Cancellable {
     public HandlerList getHandlers() {
         return handlers;
     }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
 }

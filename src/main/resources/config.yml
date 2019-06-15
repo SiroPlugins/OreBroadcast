@@ -1,26 +1,3 @@
-# A list of the ores which will be broadcasted when found.
-ores:
-    - coal
-    - iron
-    - gold
-    - lapis
-    - redstone
-    - quartz
-    - diamond
-    - emerald
-
-# The colors to use to color the ores in the broadcast message.
-# See the end of the file for a list of available colors.
-colors:
-    coal: dark_gray
-    iron: gray
-    gold: yellow
-    lapis: dark_blue
-    redstone: red
-    quartz: white
-    diamond: aqua
-    emerald: green
-
 # The message to be broadcasted (you can use the tags {player_name}, {real_player_name},
 # {count}, {plural}, {ore}, {ore_color} and {world}).
 # Notes:
@@ -28,30 +5,16 @@ colors:
 # + The {ore} tag will be replaced by {ore_color}{ore}.
 # + The "player_name" tag is the name of the player as it is set by different plugins,
 #   "real_player_name" is the real pseudo of the player.
-message: "&l{player_name}&r just found &l{count}&r block{plural} of [&l&k{ore}&r]"
-
-# The text to add when more than one ore is found (Will be used to replace the {plural} tag).
-plural: s
-
-# The ore translations to use in the messages.
-ore-translations:
-    coal: coal
-    iron: iron
-    gold: gold
-    lapis: lapis
-    redstone: redstone
-    quartz: quartz
-    diamond: diamond
-    emerald: emerald
+message: "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!"
 
 # Set this to true to only activate OreBroadcast in listed worlds.
 active-per-worlds: false
 
 # List of worlds where OreBroadcast is active.
 # This has no effect if `active-per-world` is set to false!
-#active-worlds:
-#    - world
-#    - world_nether
+active-worlds:
+    - world
+    - world_nether
 
 # Max size of a vein. If the size is greater, the vein is ignored, preventing server from freezing
 # (i.e. if mining a big structure made of a block to broadcast).
@@ -59,35 +22,3 @@ max-vein-size: 500
 
 # Block placed in creative will be broadcasted when a player not in creative break them.
 broadcast-creative-placed-blocks: true
-
-# Displays the time the block break handler take in the console.
-timing-debug: false
-
-# Activates metrics. Metrics is a stat utility allowing the developper to get informations
-# about the server running the plugin.
-# This sends java version, plugin version, player count, etc.
-# This DOESN'T send names, chat, list of operators, ips, etc.
-metrics: true
-
-# Activate updater functionnalities (Checks curse api to see if a new update is available)
-updater:
-
-    # Check if a new version is available at startup
-    startup-check: true
-
-    # Warn ops when they connect if a new version is available
-    warn-ops: true
-
-# Colors and color codes available :
-# Use the colors for the ore list and the color codes for the message
-#   black : 0           |     dark_blue : 1
-#   dark_green : 2      |     dark_aqua : 3
-#   dark_red : 4        |     dark_purple : 5
-#   gold : 6            |     gray : 7
-#   dark_gray : 8       |     blue : 9
-#   green : a           |     aqua : b
-#   red : c             |     light_purple : d
-#   yellow : e          |     white : f
-#   magic : k           |     bold : l
-#   strikethrough : m   |     underline : n
-#   italic : o          |     reset : r
