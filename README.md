@@ -2,32 +2,18 @@
 
 ![Preview](img/logo-ore-broadcast.png)
 
-## English
+### PLについて
 
-### Description
+ダイヤモンド鉱石を掘るとサーバー全員に通知します。
 
-Broadcast a message to the server when you find ores.
 
-### Commands
+### 変更点
 
-+ /ob reload : Reload config from file
-
-### Download
-
-Automatic builds are available here : [https://drone.io/github.com/bendem/OreBroadcast/files](https://drone.io/github.com/bendem/OreBroadcast/files)
-
-## Français
-
-### Description
-
-Broadcast un message à tout le serveur quand vous trouvez des minerais.
-
-### Commandes
-
-+ /ob reload : Recharge la config depuis le fichier
-
-### Téléchargement
-
-Les builds seront disponible ici : [https://drone.io/github.com/bendem/OreBroadcast/files](https://drone.io/github.com/bendem/OreBroadcast/files)
-
-![Preview](img/preview.jpg)
+- Maven の依存関係の変更および更新
+- Spigot-API 1.13.2-R0.1-SNAPSHOT API を使用
+- コマンドの廃止
+- metrics / update 機能の削除
+- 通知対象の鉱石をダイヤモンドのみに
+- ピストン検知削除
+- 変更に伴う Config の必要のない記述の削減
+- その他 多くの変更あり
