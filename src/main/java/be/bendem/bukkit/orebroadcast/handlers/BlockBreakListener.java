@@ -35,7 +35,6 @@ public class BlockBreakListener implements Listener {
             // + users without ob.broadcast permission
             // + users in a non whitelisted world
             if (player.getGameMode() != GameMode.SURVIVAL
-                    || !player.hasPermission("ob.broadcast")
                     || !plugin.isWorldWhitelisted(player.getWorld().getName())) {
                 return;
             }
