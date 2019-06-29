@@ -1,24 +1,21 @@
-# The message to be broadcasted (you can use the tags {player_name}, {real_player_name},
-# {count}, {plural}, {ore}, {ore_color} and {world}).
-# Notes:
-# + You can use colors by using &colorcode (See the end of the file for a list of available color codes).
-# + The {ore} tag will be replaced by {ore_color}{ore}.
-# + The "player_name" tag is the name of the player as it is set by different plugins,
-#   "real_player_name" is the real pseudo of the player.
+# 通知するメッセージの設定
+# 使用できるプレースホルダー:
+#  {player_name}: 破壊したプレイヤーの表示名
+#  {real_player_name}: 破壊したプレイヤーのMCID
+#  {count}: 発掘した鉱石の個数
+#  {ore}: 鉱石の名前
+#  {world}: 発掘したワールド名
+
 message: "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!"
 
-# Set this to true to only activate OreBroadcast in listed worlds.
-active-per-worlds: false
+# 鉱石を破壊した際、全体通知しないようにするワールドを指定
 
-# List of worlds where OreBroadcast is active.
-# This has no effect if `active-per-world` is set to false!
-active-worlds:
-    - world
-    - world_nether
+disableWorlds: []
 
-# Max size of a vein. If the size is greater, the vein is ignored, preventing server from freezing
-# (i.e. if mining a big structure made of a block to broadcast).
-max-vein-size: 500
+# 発掘した鉱石をカウントする最大値
 
-# Block placed in creative will be broadcasted when a player not in creative break them.
+max-vein-size: 100
+
+# クリエイティブモードのプレイヤーが置いた鉱石を、サバイバルモードで破壊した時に全体通知するか
+
 broadcast-creative-placed-blocks: true

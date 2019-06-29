@@ -19,11 +19,10 @@ public class BlockPlaceListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent e) {
         Block block = e.getBlock();
-        if(e.getBlock().getType().equals(Material.DIAMOND_ORE) && plugin.isWorldWhitelisted(block.getWorld().getName()) && !plugin.isBlackListed(block)
+        if(e.getBlock().getType().equals(Material.DIAMOND_ORE) && plugin.isWorldDisabled(block.getWorld().getName()) && !plugin.isBlackListed(block)
                 && (e.getPlayer().getGameMode() != GameMode.CREATIVE
                     || !plugin.getConfig().getBoolean("broadcast-creative-placed-blocks", true))) {
             plugin.blackList(block);
         }
     }
-
 }

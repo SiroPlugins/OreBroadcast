@@ -3,40 +3,31 @@ package be.bendem.bukkit.orebroadcast;
 import java.util.HashSet;
 import java.util.Set;
 
-/* package */ class Config {
+class Config {
 
     private final OreBroadcast plugin;
-    private final Set<SafeBlock> broadcastBlacklist   = new HashSet<>();
-    private final Set<String>    worldWhitelist       = new HashSet<>();
-    private       boolean        worldWhitelistActive = false;
+    private final Set<SafeBlock> broadcastBlacklist = new HashSet<>();
+    private final Set<String> disableWorlds = new HashSet<>();
 
-    /* package */ Config(OreBroadcast plugin) {
+    Config(OreBroadcast plugin) {
         this.plugin = plugin;
         plugin.saveDefaultConfig();
     }
 
-    /* package */ void loadConfig() {
+    void loadConfig() {
+
         plugin.reloadConfig();
 
-        // Load world whitelist
-        worldWhitelist.clear();
-        worldWhitelistActive = plugin.getConfig().getBoolean("active-per-worlds", true);
-        if(worldWhitelistActive) {
-            worldWhitelist.addAll(plugin.getConfig().getStringList("active-worlds"));
-        }
+        disableWorlds.addAll(plugin.getConfig().getStringList("disableWorlds"));
+
     }
 
-    /* package */ Set<SafeBlock> getBroadcastBlacklist() {
+    Set<SafeBlock> getBroadcastBlacklist() {
         return broadcastBlacklist;
     }
 
-    /* package */ Set<String> getWorldWhitelist() {
-        return worldWhitelist;
+    Set<String> getDisableWorlds() {
+        return disableWorlds;
     }
-
-    /* package */ boolean isWorldWhitelistActive() {
-        return worldWhitelistActive;
-    }
-
 
 }
