@@ -17,7 +17,7 @@ public class OreBroadcastEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private       String format;
+    private final String format;
     private final Block blockMined;
     private final Player source;
     private final Set<Block> vein;

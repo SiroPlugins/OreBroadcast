@@ -6,11 +6,11 @@ import org.bukkit.block.Block;
 import java.util.UUID;
 
 /**
- * SafeBlock contains informations about a block but doesn't prevents world
- * unloading (it doesn't contain informations about the server's worlds)
+ * SafeBlock contains information about a block but doesn't prevents world
+ * unloading (it doesn't contain information about the server's worlds)
  * @author bendem
  */
-public class SafeBlock {
+class SafeBlock {
 
     private final int  x;
     private final int  y;

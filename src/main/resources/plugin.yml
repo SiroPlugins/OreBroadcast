@@ -1,4 +1,4 @@
-name: ${pom.name}
+name: OreBroadcast
 main: be.bendem.bukkit.orebroadcast.OreBroadcast
 version: ${pom.version}
 author: bendem
