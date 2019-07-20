@@ -7,26 +7,38 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static org.bukkit.Material.*;
 
 public class BlockBreakListener implements Listener {
 
     private final OreBroadcast plugin;
+    private final FileConfiguration config;
+    private final List<Material> oreList = new ArrayList<>();
+    private final Map<Material, String> oreName = new HashMap<>();
 
     public BlockBreakListener(OreBroadcast plugin) {
         this.plugin = plugin;
+        config = plugin.getConfig();
+
+        Collections.addAll(oreList, COAL_ORE, IRON_ORE, GOLD_ORE, REDSTONE_ORE, LAPIS_ORE, EMERALD_ORE, DIAMOND_ORE);
+
+        oreList.forEach(m -> oreName.put(m, config.getString("Ores." + m.toString(), m.toString())));
+
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType().equals(Material.DIAMOND_ORE)) {
+        Block block = event.getBlock();
+        if (oreList.contains(block.getType()) && !config.getStringList("disableOres").contains(block.getType().toString())) {
 
             Player player = event.getPlayer();
 
@@ -34,8 +46,6 @@ public class BlockBreakListener implements Listener {
                     || plugin.isWorldDisabled(player.getWorld().getName())) {
                 return;
             }
-
-            Block block = event.getBlock();
 
             if (plugin.isBlackListed(block)) {
                 plugin.unBlackList(block);
@@ -61,7 +71,7 @@ public class BlockBreakListener implements Listener {
                 return;
             }
 
-            String blockName = "Diamond";
+            String blockName = oreName.get(block.getType());
             plugin.blackList(e.getVein());
             plugin.unBlackList(e.getBlockMined());
 
@@ -71,6 +81,7 @@ public class BlockBreakListener implements Listener {
                     e.getVein().size(),
                     blockName
             );
+
             Bukkit.broadcastMessage(formattedMessage);
         }
     }

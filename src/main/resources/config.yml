@@ -8,9 +8,23 @@
 
 message: "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!"
 
+# 鉱石の名前を設定
+Ores:
+  COAL_ORE: "Coal"
+  IRON_ORE: "Iron Ore"
+  GOLD_ORE: "Gold Ore"
+  REDSTONE_ORE: "Redstone Ore"
+  LAPIS_ORE: "Lapis"
+  EMERALD_ORE: "Emerald"
+  DIAMOND_ORE: "Diamond"
+
 # 鉱石を破壊した際、全体通知しないようにするワールドを指定
 
 disableWorlds: []
+
+# 全体通知を無効化する鉱石 ex) COAL_ORE
+
+disableOres: []
 
 # 発掘した鉱石をカウントする最大値
 
