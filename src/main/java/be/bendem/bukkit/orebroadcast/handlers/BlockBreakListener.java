@@ -2,11 +2,11 @@ package be.bendem.bukkit.orebroadcast.handlers;
 
 import be.bendem.bukkit.orebroadcast.OreBroadcast;
 import be.bendem.bukkit.orebroadcast.OreBroadcastEvent;
+import be.bendem.bukkit.orebroadcast.OreBroadcastException;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,24 +20,28 @@ import static org.bukkit.Material.*;
 public class BlockBreakListener implements Listener {
 
     private final OreBroadcast plugin;
-    private final FileConfiguration config;
     private final List<Material> oreList = new ArrayList<>();
+    private final List<String> disableOres;
     private final Map<Material, String> oreName = new HashMap<>();
+    private final int maxVein;
+    private final String msg;
 
     public BlockBreakListener(OreBroadcast plugin) {
         this.plugin = plugin;
-        config = plugin.getConfig();
+
+        maxVein = plugin.getConfig().getInt("max-vein-size", 100);
+        msg = plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {ore}");
+        disableOres = plugin.getConfig().getStringList("disableOres");
 
         Collections.addAll(oreList, COAL_ORE, IRON_ORE, GOLD_ORE, REDSTONE_ORE, LAPIS_ORE, EMERALD_ORE, DIAMOND_ORE);
 
-        oreList.forEach(m -> oreName.put(m, config.getString("Ores." + m.toString(), m.toString())));
-
+        oreList.forEach(m -> oreName.put(m, plugin.getConfig().getString("Ores." + m.toString(), m.toString())));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (oreList.contains(block.getType()) && !config.getStringList("disableOres").contains(block.getType().toString())) {
+        if (oreList.contains(block.getType()) && !disableOres.contains(block.getType().toString())) {
 
             Player player = event.getPlayer();
 
@@ -53,13 +57,13 @@ public class BlockBreakListener implements Listener {
 
             Set<Block> vein = getVein(block);
 
-            if (vein.size() < 1) {
+            if (vein == null || vein.size() < 1) {
                 plugin.getLogger().fine("Vein ignored");
                 return;
             }
 
             OreBroadcastEvent e = new OreBroadcastEvent(
-                    plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {ore}"),
+                    msg,
                     player,
                     block,
                     vein
@@ -88,13 +92,17 @@ public class BlockBreakListener implements Listener {
     private Set<Block> getVein(Block block) {
         Set<Block> vein = new HashSet<>();
         vein.add(block);
-        getVein(block, vein);
+        try {
+            getVein(block, vein);
+        } catch (OreBroadcastException e) {
+            return null;
+        }
         return vein;
     }
 
-    private void getVein(Block block, Set<Block> vein) {
-        if (vein.size() > plugin.getConfig().getInt("max-vein-size", 100)) {
-            return;
+    private void getVein(Block block, Set<Block> vein) throws OreBroadcastException {
+        if (vein.size() > maxVein) {
+            throw new OreBroadcastException();
         }
 
         int i, j, k;
