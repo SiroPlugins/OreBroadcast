@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,28 +20,24 @@ import static org.bukkit.Material.*;
 public class BlockBreakListener implements Listener {
 
     private final OreBroadcast plugin;
+    private final FileConfiguration config;
     private final List<Material> oreList = new ArrayList<>();
-    private final List<String> disableOres;
     private final Map<Material, String> oreName = new HashMap<>();
-    private final int maxVein;
-    private final String msg;
 
     public BlockBreakListener(OreBroadcast plugin) {
         this.plugin = plugin;
-        maxVein = plugin.getConfig().getInt("max-vein-size", 100);
-        msg = plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {ore}");
-        disableOres = plugin.getConfig().getStringList("disableOres");
+        config = plugin.getConfig();
 
         Collections.addAll(oreList, COAL_ORE, IRON_ORE, GOLD_ORE, REDSTONE_ORE, LAPIS_ORE, EMERALD_ORE, DIAMOND_ORE);
 
-        oreList.forEach(m -> oreName.put(m, plugin.getConfig().getString("Ores." + m.toString(), m.toString())));
+        oreList.forEach(m -> oreName.put(m, config.getString("Ores." + m.toString(), m.toString())));
 
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (oreList.contains(block.getType()) && !disableOres.contains(block.getType().toString())) {
+        if (oreList.contains(block.getType()) && !config.getStringList("disableOres").contains(block.getType().toString())) {
 
             Player player = event.getPlayer();
 
@@ -62,14 +59,13 @@ public class BlockBreakListener implements Listener {
             }
 
             OreBroadcastEvent e = new OreBroadcastEvent(
-                    msg,
+                    plugin.getConfig().getString("message", "{player} just found {count} block{plural} of {ore}"),
                     player,
                     block,
                     vein
             );
 
             plugin.getServer().getPluginManager().callEvent(e);
-
             if (e.isCancelled() || e.getVein().isEmpty()) {
                 return;
             }
@@ -97,7 +93,7 @@ public class BlockBreakListener implements Listener {
     }
 
     private void getVein(Block block, Set<Block> vein) {
-        if (vein.size() > maxVein) {
+        if (vein.size() > plugin.getConfig().getInt("max-vein-size", 100)) {
             return;
         }
 
