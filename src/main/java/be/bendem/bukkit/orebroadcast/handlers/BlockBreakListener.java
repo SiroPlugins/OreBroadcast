@@ -2,7 +2,6 @@ package be.bendem.bukkit.orebroadcast.handlers;
 
 import be.bendem.bukkit.orebroadcast.OreBroadcast;
 import be.bendem.bukkit.orebroadcast.OreBroadcastEvent;
-import be.bendem.bukkit.orebroadcast.OreBroadcastException;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -54,7 +53,7 @@ public class BlockBreakListener implements Listener {
 
             Set<Block> vein = getVein(block);
 
-            if (vein == null || vein.size() < 1) {
+            if (vein.size() < 1) {
                 plugin.getLogger().fine("Vein ignored");
                 return;
             }
@@ -89,17 +88,13 @@ public class BlockBreakListener implements Listener {
     private Set<Block> getVein(Block block) {
         Set<Block> vein = new HashSet<>();
         vein.add(block);
-        try {
-            getVein(block, vein);
-        } catch (OreBroadcastException e) {
-            return null;
-        }
+        getVein(block, vein);
         return vein;
     }
 
-    private void getVein(Block block, Set<Block> vein) throws OreBroadcastException {
+    private void getVein(Block block, Set<Block> vein) {
         if (vein.size() > plugin.getConfig().getInt("max-vein-size", 100)) {
-            throw new OreBroadcastException();
+            return;
         }
 
         int i, j, k;
