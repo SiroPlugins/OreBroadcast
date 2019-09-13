@@ -1,6 +1,6 @@
 name: OreBroadcast
 main: be.bendem.bukkit.orebroadcast.OreBroadcast
 version: ${pom.version}
-author: bendem
+authors: [bendem, Siroshun09]
 api-version: "1.14"
 description: Send messages to other players when you find ores.
