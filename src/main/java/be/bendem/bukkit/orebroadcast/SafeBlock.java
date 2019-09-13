@@ -1,6 +1,5 @@
 package be.bendem.bukkit.orebroadcast;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.block.Block;
 
 import java.util.UUID;
@@ -8,13 +7,14 @@ import java.util.UUID;
 /**
  * SafeBlock contains information about a block but doesn't prevents world
  * unloading (it doesn't contain information about the server's worlds)
+ *
  * @author bendem
  */
 class SafeBlock {
 
-    private final int  x;
-    private final int  y;
-    private final int  z;
+    private final int x;
+    private final int y;
+    private final int z;
     private final UUID world;
 
     SafeBlock(Block block) {
@@ -22,7 +22,6 @@ class SafeBlock {
     }
 
     private SafeBlock(int x, int y, int z, UUID world) {
-        Validate.notNull(world);
         this.x = x;
         this.y = y;
         this.z = z;
@@ -31,10 +30,10 @@ class SafeBlock {
 
     @Override
     public boolean equals(Object o) {
-        if(this == o) {
+        if (this == o) {
             return true;
         }
-        if(!(o instanceof SafeBlock)) {
+        if (!(o instanceof SafeBlock)) {
             return false;
         }
         SafeBlock safeBlock = (SafeBlock) o;
