@@ -1,89 +1,65 @@
 package be.bendem.bukkit.orebroadcast.handlers;
 
 import be.bendem.bukkit.orebroadcast.OreBroadcast;
-import be.bendem.bukkit.orebroadcast.OreBroadcastEvent;
+import be.bendem.bukkit.orebroadcast.OreDetectionEvent;
+import com.github.siroshun09.sirolibrary.message.BukkitMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.*;
-
-import static org.bukkit.Material.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BlockBreakListener implements Listener {
+    private static BlockBreakListener instance;
 
-    private final OreBroadcast plugin;
-    private final List<Material> oreList = new ArrayList<>();
-    private final List<String> disableOres;
-    private final Map<Material, String> oreName = new HashMap<>();
-    private final int maxVein;
-    private final String msg;
-
-    public BlockBreakListener(OreBroadcast plugin) {
-        this.plugin = plugin;
-
-        FileConfiguration config = plugin.getConfig();
-        maxVein = config.getInt("max-vein-size", 100);
-        msg = config.getString("message", "{player} just found {count} block{plural} of {ore}");
-        disableOres = config.getStringList("disableOres");
-
-        Collections.addAll(oreList, COAL_ORE, IRON_ORE, GOLD_ORE, REDSTONE_ORE, LAPIS_ORE, EMERALD_ORE, DIAMOND_ORE);
-
-        oreList.forEach(m -> oreName.put(m, config.getString("Ores." + m.toString(), m.toString())));
+    private BlockBreakListener() {
+        instance = this;
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public static BlockBreakListener get() {
+        if (instance == null) {
+            new BlockBreakListener();
+        }
+        return instance;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
+        if (!OreBroadcast.get().isOre(block.getType()) || OreBroadcast.get().isWorldDisabled(block.getWorld())) {
+            return;
+        }
 
-        if (!oreList.contains(block.getType()) || disableOres.contains(block.getType().toString())) return;
+        if (OreBroadcast.get().isBlackListed(block)) {
+            OreBroadcast.get().unBlackList(block);
+            return;
+        }
 
-        Player player = event.getPlayer();
-
-        if (player.getGameMode() != GameMode.SURVIVAL || plugin.isWorldDisabled(player.getWorld().getName())) return;
-
-        if (plugin.isBlackListed(block)) {
-            plugin.unBlackList(block);
+        if (!event.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
             return;
         }
 
         Set<Block> vein = getVein(block);
-
-        if (vein.size() == 0) {
-            plugin.getLogger().fine("Vein ignored");
+        if (vein.isEmpty()) {
             return;
         }
 
-        OreBroadcastEvent e = new OreBroadcastEvent(
-                msg,
-                player,
-                block,
-                vein
-        );
-
-        plugin.getServer().getPluginManager().callEvent(e);
-        if (e.isCancelled() || e.getVein().isEmpty()) {
+        OreDetectionEvent e = new OreDetectionEvent(event.getPlayer(), block, vein);
+        Bukkit.getPluginManager().callEvent(e);
+        if (e.getVein().isEmpty()) {
             return;
         }
 
-        plugin.blackList(e.getVein());
-        plugin.unBlackList(e.getBlockMined());
+        OreBroadcast.get().blackList(e.getVein());
+        OreBroadcast.get().unBlackList(e.getBlockMined());
 
-        String formattedMessage = format(
-                e.getFormat(),
-                e.getSource(),
-                e.getVein().size(),
-                oreName.get(block.getType())
-        );
-
-        Bukkit.broadcastMessage(formattedMessage);
+        broadcast(OreBroadcast.get().getMessage(), e.getPlayer(), e.getVein().size(), OreBroadcast.get().getOreName(e.getBlockMined().getType()));
     }
 
     private Set<Block> getVein(Block block) {
@@ -94,21 +70,20 @@ public class BlockBreakListener implements Listener {
     }
 
     private void getVein(Block block, Set<Block> vein) {
-        if (vein.size() > maxVein) {
-            return;
-        }
-
-        int i, j, k;
-        for (i = -1; i < 2; i++) {
-            for (j = -1; j < 2; j++) {
-                for (k = -1; k < 2; k++) {
-                    Block relative = block.getRelative(i, j, k);
-                    if (!vein.contains(relative)                  // block already found
-                            && block.getType().equals(relative.getType())           // block has not the same type
-                            && ((i != 0 || j != 0 || k != 0))) {   // comparing block to itself
+        int x, y, z;
+        for (x = -1; x < 2; x++) {
+            for (y = -1; y < 2; y++) {
+                for (z = -1; z < 2; z++) {
+                    if (OreBroadcast.get().getMaxVein() <= vein.size()) {
+                        break;
+                    }
+                    Block relative = block.getRelative(x, y, z);
+                    if (!vein.contains(relative) && block.getType().equals(relative.getType())
+                            && !OreBroadcast.get().isBlackListed(relative) && (x != 0 || y != 0 || z != 0)) {
                         vein.add(relative);
                         getVein(relative, vein);
                     }
+
                 }
             }
         }
@@ -116,11 +91,14 @@ public class BlockBreakListener implements Listener {
 
     private String format(String msg, Player player, int count, String ore) {
         return msg
-                .replace("&", "§")
                 .replace("{player_name}", player.getDisplayName())
                 .replace("{real_player_name}", player.getName())
                 .replace("{world}", player.getWorld().getName())
                 .replace("{count}", String.valueOf(count))
                 .replace("{ore}", ore);
+    }
+
+    private void broadcast(String msg, Player player, int count, String ore) {
+        BukkitMessage.broadcastWithColor(format(msg, player, count, ore));
     }
 }

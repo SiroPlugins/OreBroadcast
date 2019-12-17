@@ -2,46 +2,87 @@ package be.bendem.bukkit.orebroadcast;
 
 import be.bendem.bukkit.orebroadcast.handlers.BlockBreakListener;
 import be.bendem.bukkit.orebroadcast.handlers.BlockPlaceListener;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class OreBroadcast extends JavaPlugin {
+    private static OreBroadcast instance;
+    private final Set<Block> broadcastBlacklist = new HashSet<>();
+    private final List<Material> oreList =
+            List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE,
+                    Material.REDSTONE_ORE, Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE);
 
-    private final Set<SafeBlock> broadcastBlacklist = new HashSet<>();
-    private final Set<String> disableWorlds = new HashSet<>();
+    public OreBroadcast() {
+        instance = this;
+    }
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         reloadConfig();
+        getServer().getPluginManager().registerEvents(BlockBreakListener.get(), this);
+        getServer().getPluginManager().registerEvents(BlockPlaceListener.get(), this);
+    }
 
-        disableWorlds.addAll(getConfig().getStringList("disableWorlds"));
+    @Override
+    public void onDisable() {
+        HandlerList.unregisterAll(this);
+        broadcastBlacklist.clear();
+    }
 
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceListener(this), this);
+    public String getMessage() {
+        return getConfig().getString("message", "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!");
+    }
+
+    public String getOreName(Material material) {
+        return getConfig().getString("Ores." + material.toString(), material.toString());
+    }
+
+    public int getMaxVein() {
+        return getConfig().getInt("max-vein-size", 100);
+    }
+
+    public boolean isOre(Material material) {
+        return oreList.contains(material);
+    }
+
+    public boolean isDisabledOre(Material material) {
+        return getConfig().getStringList("disableOres").contains(material.toString());
+    }
+
+    public boolean isIgnoreCreative() {
+        return getConfig().getBoolean("broadcast-creative-placed-blocks", true);
+    }
+
+    public boolean isWorldDisabled(World world) {
+        return getConfig().getStringList("disableWorlds").contains(world.getName());
     }
 
     public void blackList(Block block) {
-        broadcastBlacklist.add(new SafeBlock(block));
+        broadcastBlacklist.add(block);
     }
 
     public void blackList(Collection<Block> blocks) {
-        for (Block block : blocks) blackList(block);
+        broadcastBlacklist.addAll(blocks);
     }
 
     public void unBlackList(Block block) {
-        broadcastBlacklist.remove(new SafeBlock(block));
+        broadcastBlacklist.remove(block);
     }
 
     public boolean isBlackListed(Block block) {
-        return broadcastBlacklist.contains(new SafeBlock(block));
+        return broadcastBlacklist.contains(block);
     }
 
-    public boolean isWorldDisabled(String world) {
-        return disableWorlds.contains(world);
+    public static OreBroadcast get() {
+        return instance;
     }
 }
