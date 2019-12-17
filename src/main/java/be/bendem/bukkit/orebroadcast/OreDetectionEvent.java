@@ -37,6 +37,11 @@ public class OreDetectionEvent extends Event {
     }
 
     @NotNull
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
