@@ -17,6 +17,7 @@ Ores:
   LAPIS_ORE: "Lapis"
   EMERALD_ORE: "Emerald"
   DIAMOND_ORE: "Diamond"
+  NETHER_QUARTZ_ORE: "Quartz"
 
 # 鉱石を破壊した際、全体通知しないようにするワールドを指定
 

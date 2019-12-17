@@ -2,8 +2,8 @@ package be.bendem.bukkit.orebroadcast.handlers;
 
 import be.bendem.bukkit.orebroadcast.OreBroadcast;
 import be.bendem.bukkit.orebroadcast.OreDetectionEvent;
+import com.github.siroshun09.sirolibrary.bukkitutils.BukkitUtil;
 import com.github.siroshun09.sirolibrary.message.BukkitMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class BlockBreakListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockBreak(@NotNull BlockBreakEvent event) {
         Block block = event.getBlock();
         if (!OreBroadcast.get().isOre(block.getType()) || OreBroadcast.get().isWorldDisabled(block.getWorld())) {
             return;
@@ -51,7 +52,7 @@ public class BlockBreakListener implements Listener {
         }
 
         OreDetectionEvent e = new OreDetectionEvent(event.getPlayer(), block, vein);
-        Bukkit.getPluginManager().callEvent(e);
+        BukkitUtil.callEvent(e);
         if (e.getVein().isEmpty()) {
             return;
         }
@@ -59,9 +60,11 @@ public class BlockBreakListener implements Listener {
         OreBroadcast.get().blackList(e.getVein());
         OreBroadcast.get().unBlackList(e.getBlockMined());
 
-        broadcast(OreBroadcast.get().getMessage(), e.getPlayer(), e.getVein().size(), OreBroadcast.get().getOreName(e.getBlockMined().getType()));
+        broadcast(OreBroadcast.get().getMessage(), e.getPlayer(),
+                OreBroadcast.get().getOreName(e.getBlockMined().getType()), e.getVein().size());
     }
 
+    @NotNull
     private Set<Block> getVein(Block block) {
         Set<Block> vein = new HashSet<>();
         vein.add(block);
@@ -83,22 +86,22 @@ public class BlockBreakListener implements Listener {
                         vein.add(relative);
                         getVein(relative, vein);
                     }
-
                 }
             }
         }
     }
 
-    private String format(String msg, Player player, int count, String ore) {
+    @NotNull
+    private String format(@NotNull String msg, @NotNull Player player, @NotNull String ore, int count) {
         return msg
                 .replace("{player_name}", player.getDisplayName())
                 .replace("{real_player_name}", player.getName())
                 .replace("{world}", player.getWorld().getName())
-                .replace("{count}", String.valueOf(count))
-                .replace("{ore}", ore);
+                .replace("{ore}", ore)
+                .replace("{count}", String.valueOf(count));
     }
 
-    private void broadcast(String msg, Player player, int count, String ore) {
-        BukkitMessage.broadcastWithColor(format(msg, player, count, ore));
+    private void broadcast(@NotNull String msg, @NotNull Player player, @NotNull String ore, int count) {
+        BukkitMessage.broadcastWithColor(format(msg, player, ore, count));
     }
 }

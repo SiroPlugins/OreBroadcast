@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,8 +18,8 @@ public class OreBroadcast extends JavaPlugin {
     private static OreBroadcast instance;
     private final Set<Block> broadcastBlacklist = new HashSet<>();
     private final List<Material> oreList =
-            List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE,
-                    Material.REDSTONE_ORE, Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE);
+            List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE,
+                    Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE);
 
     public OreBroadcast() {
         instance = this;
@@ -42,7 +43,7 @@ public class OreBroadcast extends JavaPlugin {
         return getConfig().getString("message", "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!");
     }
 
-    public String getOreName(Material material) {
+    public String getOreName(@NotNull Material material) {
         return getConfig().getString("Ores." + material.toString(), material.toString());
     }
 
@@ -54,7 +55,7 @@ public class OreBroadcast extends JavaPlugin {
         return oreList.contains(material);
     }
 
-    public boolean isDisabledOre(Material material) {
+    public boolean isDisabledOre(@NotNull Material material) {
         return getConfig().getStringList("disableOres").contains(material.toString());
     }
 
@@ -62,7 +63,7 @@ public class OreBroadcast extends JavaPlugin {
         return getConfig().getBoolean("broadcast-creative-placed-blocks", true);
     }
 
-    public boolean isWorldDisabled(World world) {
+    public boolean isWorldDisabled(@NotNull World world) {
         return getConfig().getStringList("disableWorlds").contains(world.getName());
     }
 

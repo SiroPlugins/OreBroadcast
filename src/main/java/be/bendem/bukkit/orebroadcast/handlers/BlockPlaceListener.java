@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPlaceListener implements Listener {
     private static BlockPlaceListener instance;
@@ -22,7 +23,7 @@ public class BlockPlaceListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBlockPlace(BlockPlaceEvent e) {
+    public void onBlockPlace(@NotNull BlockPlaceEvent e) {
         if ((!e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || !OreBroadcast.get().isIgnoreCreative())
                 && OreBroadcast.get().isOre(e.getBlockPlaced().getType())
                 && !OreBroadcast.get().isDisabledOre(e.getBlockPlaced().getType())
