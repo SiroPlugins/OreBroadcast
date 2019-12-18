@@ -18,7 +18,7 @@
         <repository>
             <id>github</id>
             <name>GitHub SiroPlugins Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/SiroPlugins/OreBroadcast</url>
+            <url>https://maven.pkg.github.com/siroplugins/orebroadcast</url>
         </repository>
     </distributionManagement>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.github.siroshun09</groupId>
             <artifactId>sirolibrary</artifactId>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
         </dependency>
     </dependencies>
 
