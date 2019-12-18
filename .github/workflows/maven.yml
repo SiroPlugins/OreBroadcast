@@ -10,6 +10,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 10
+      - uses: actions/hello-world-javascript-action@master
+        id: hello
+        with:
+          who-to-greet: 'Start to build with maven'
       - uses: actions/cache@v1
         with:
           path: ~/.m2/repository
@@ -27,6 +31,13 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_S }}
         with:
           args: OreBroadcast.zip
+      - name: Discord notification (O)
+        if: github.ref == 'refs/heads/master'
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_O }}
+        with:
+          args: ':new: OreBroadcast が更新されました!'
       - name: Send generated files to Discord (O)
         uses: sinshutu/upload-to-discord@master
         if: github.ref == 'refs/heads/master'
