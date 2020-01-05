@@ -26,7 +26,6 @@ public class BlockPlaceListener implements Listener {
     public void onBlockPlace(@NotNull BlockPlaceEvent e) {
         if ((!e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || !OreBroadcast.get().isIgnoreCreative())
                 && OreBroadcast.get().isOre(e.getBlockPlaced().getType())
-                && !OreBroadcast.get().isDisabledOre(e.getBlockPlaced().getType())
                 && !OreBroadcast.get().isBlackListed(e.getBlock())
                 && !OreBroadcast.get().isWorldDisabled(e.getBlock().getWorld())) {
             OreBroadcast.get().blackList(e.getBlock());

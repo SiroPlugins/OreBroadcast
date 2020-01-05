@@ -44,7 +44,7 @@ public class OreBroadcast extends JavaPlugin {
     }
 
     public String getOreName(@NotNull Material material) {
-        return getConfig().getString("Ores." + material.toString(), material.toString());
+        return getConfig().getString("Ores." + material.name(), material.name());
     }
 
     public int getMaxVein() {
@@ -56,7 +56,7 @@ public class OreBroadcast extends JavaPlugin {
     }
 
     public boolean isDisabledOre(@NotNull Material material) {
-        return getConfig().getStringList("disableOres").contains(material.toString());
+        return getConfig().getStringList("disableOres").contains(material.name());
     }
 
     public boolean isIgnoreCreative() {

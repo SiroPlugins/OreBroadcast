@@ -53,12 +53,13 @@ public class BlockBreakListener implements Listener {
 
         OreDetectionEvent e = new OreDetectionEvent(event.getPlayer(), block, vein);
         BukkitUtil.callEvent(e);
-        if (e.getVein().isEmpty()) {
-            return;
-        }
 
         OreBroadcast.get().blackList(e.getVein());
         OreBroadcast.get().unBlackList(e.getBlockMined());
+
+        if (e.getVein().isEmpty() || OreBroadcast.get().isDisabledOre(block.getType())) {
+            return;
+        }
 
         broadcast(OreBroadcast.get().getMessage(), e.getPlayer(),
                 OreBroadcast.get().getOreName(e.getBlockMined().getType()), e.getVein().size());

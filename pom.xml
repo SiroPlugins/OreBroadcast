@@ -4,7 +4,7 @@
 
     <groupId>be.bendem.bukkit</groupId>
     <artifactId>OreBroadcast</artifactId>
-    <version>5.2</version>
+    <version>5.3</version>
 
     <name>OreBroadcast</name>
     <url>https://github.com/SiroPlugins/OreBroadcast</url>
@@ -36,13 +36,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15-R0.1-SNAPSHOT</version>
+            <version>1.15.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.siroshun09</groupId>
             <artifactId>sirolibrary</artifactId>
-            <version>1.2.8</version>
+            <version>1.4.3</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
