@@ -24,11 +24,15 @@ public class BlockPlaceListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockPlace(@NotNull BlockPlaceEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
+
         if ((!e.getPlayer().getGameMode().equals(GameMode.CREATIVE) || !OreBroadcast.get().isIgnoreCreative())
                 && OreBroadcast.get().isOre(e.getBlockPlaced().getType())
                 && !OreBroadcast.get().isBlackListed(e.getBlock())
                 && !OreBroadcast.get().isWorldDisabled(e.getBlock().getWorld())) {
-            OreBroadcast.get().blackList(e.getBlock());
+            OreBroadcast.get().addBlackList(e.getBlock());
         }
     }
 }

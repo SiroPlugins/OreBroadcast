@@ -31,8 +31,12 @@ public class BlockBreakListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBlockBreak(@NotNull BlockBreakEvent event) {
-        Block block = event.getBlock();
+    public void onBlockBreak(@NotNull BlockBreakEvent e) {
+        if (e.isCancelled()) {
+            return;
+        }
+
+        Block block = e.getBlock();
         if (!OreBroadcast.get().isOre(block.getType()) || OreBroadcast.get().isWorldDisabled(block.getWorld())) {
             return;
         }
@@ -42,7 +46,7 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        if (!event.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+        if (!e.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
             return;
         }
 
@@ -51,18 +55,17 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        OreDetectionEvent e = new OreDetectionEvent(event.getPlayer(), block, vein);
-        BukkitUtil.callEvent(e);
+        OreDetectionEvent event = new OreDetectionEvent(e.getPlayer(), block, vein);
+        BukkitUtil.callEvent(event);
 
-        OreBroadcast.get().blackList(e.getVein());
-        OreBroadcast.get().unBlackList(e.getBlockMined());
+        OreBroadcast.get().addBlackList(event.getVein());
 
-        if (e.getVein().isEmpty() || OreBroadcast.get().isDisabledOre(block.getType())) {
+        if (event.getVein().isEmpty() || OreBroadcast.get().isDisabledOre(block.getType())) {
             return;
         }
 
-        broadcast(OreBroadcast.get().getMessage(), e.getPlayer(),
-                OreBroadcast.get().getOreName(e.getBlockMined().getType()), e.getVein().size());
+        broadcast(OreBroadcast.get().getMessage(), event.getPlayer(),
+                OreBroadcast.get().getOreName(event.getBlockMined().getType()), event.getVein().size());
     }
 
     @NotNull

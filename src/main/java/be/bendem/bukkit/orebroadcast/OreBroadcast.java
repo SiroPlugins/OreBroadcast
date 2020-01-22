@@ -6,17 +6,16 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class OreBroadcast extends JavaPlugin {
     private static OreBroadcast instance;
-    private final Set<Block> broadcastBlacklist = new HashSet<>();
+
     private final List<Material> oreList =
             List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE,
                     Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE);
@@ -36,15 +35,14 @@ public class OreBroadcast extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
-        broadcastBlacklist.clear();
     }
 
     public String getMessage() {
-        return getConfig().getString("message", "&7* &l{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!");
+        return getConfig().getString("message", "&7* &b{player_name}&r &7が &b{count}個&r &7の &b{ore}&7 を発見した!");
     }
 
     public String getOreName(@NotNull Material material) {
-        return getConfig().getString("Ores." + material.name(), material.name());
+        return getConfig().getString("Ores." + material.toString(), material.toString());
     }
 
     public int getMaxVein() {
@@ -56,7 +54,7 @@ public class OreBroadcast extends JavaPlugin {
     }
 
     public boolean isDisabledOre(@NotNull Material material) {
-        return getConfig().getStringList("disableOres").contains(material.name());
+        return getConfig().getStringList("disableOres").contains(material.toString());
     }
 
     public boolean isIgnoreCreative() {
@@ -67,20 +65,20 @@ public class OreBroadcast extends JavaPlugin {
         return getConfig().getStringList("disableWorlds").contains(world.getName());
     }
 
-    public void blackList(Block block) {
-        broadcastBlacklist.add(block);
+    public void addBlackList(@NotNull Block block) {
+        block.setMetadata("isPlaced", new FixedMetadataValue(this, true));
     }
 
-    public void blackList(Collection<Block> blocks) {
-        broadcastBlacklist.addAll(blocks);
+    public void addBlackList(@NotNull Collection<Block> blocks) {
+        blocks.forEach(this::addBlackList);
     }
 
-    public void unBlackList(Block block) {
-        broadcastBlacklist.remove(block);
+    public void unBlackList(@NotNull Block block) {
+        block.removeMetadata("isPlaced", this);
     }
 
-    public boolean isBlackListed(Block block) {
-        return broadcastBlacklist.contains(block);
+    public boolean isBlackListed(@NotNull Block block) {
+        return block.hasMetadata("isPlaced");
     }
 
     public static OreBroadcast get() {
