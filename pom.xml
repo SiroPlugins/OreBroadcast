@@ -4,7 +4,7 @@
 
     <groupId>be.bendem.bukkit</groupId>
     <artifactId>OreBroadcast</artifactId>
-    <version>5.5</version>
+    <version>6.0</version>
 
     <name>OreBroadcast</name>
     <url>https://github.com/SiroPlugins/OreBroadcast</url>
@@ -26,22 +26,18 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <repository>
-            <id>bintray-siroshun-maven-repo</id>
-            <url>https://siroshun.bintray.com/maven-repo</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.siroshun09</groupId>
-            <artifactId>sirolibrary</artifactId>
-            <version>1.4.6</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -61,7 +57,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <finalName>${project.name}-${project.version}</finalName>
                 </configuration>
