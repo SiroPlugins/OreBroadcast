@@ -18,7 +18,7 @@ public class OreBroadcast extends JavaPlugin {
 
     private final List<Material> oreList =
             List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE,
-                    Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE);
+                    Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE, Material.NETHER_GOLD_ORE);
 
     public OreBroadcast() {
         instance = this;
