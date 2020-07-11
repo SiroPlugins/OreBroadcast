@@ -2,8 +2,7 @@ package be.bendem.bukkit.orebroadcast.handlers;
 
 import be.bendem.bukkit.orebroadcast.OreBroadcast;
 import be.bendem.bukkit.orebroadcast.OreDetectionEvent;
-import com.github.siroshun09.sirolibrary.bukkitutils.BukkitUtil;
-import com.github.siroshun09.sirolibrary.message.BukkitMessage;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -56,7 +55,7 @@ public class BlockBreakListener implements Listener {
         }
 
         OreDetectionEvent event = new OreDetectionEvent(e.getPlayer(), block, vein);
-        BukkitUtil.callEvent(event);
+        e.getPlayer().getServer().getPluginManager().callEvent(event);
 
         OreBroadcast.get().addBlackList(event.getVein());
 
@@ -106,6 +105,7 @@ public class BlockBreakListener implements Listener {
     }
 
     private void broadcast(@NotNull String msg, @NotNull Player player, @NotNull String ore, int count) {
-        BukkitMessage.broadcastWithColor(format(msg, player, ore, count));
+        String message = ChatColor.translateAlternateColorCodes('&', format(msg, player, ore, count));
+        player.getServer().getOnlinePlayers().forEach(p -> p.sendMessage(message));
     }
 }
