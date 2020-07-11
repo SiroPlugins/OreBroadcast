@@ -6,10 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up JDK 10
+      - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
-          java-version: 10
+          java-version: 11
       - uses: actions/cache@v1
         with:
           path: ~/.m2/repository
@@ -18,26 +18,7 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-      - name: Compress generated file
-        id: compress_generated_files
-        run: zip -r OreBroadcast target/
-      - name: Send generated files to Discord (S)
-        uses: sinshutu/upload-to-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_S }}
+      - uses: actions/upload-artifact@v1
         with:
-          args: OreBroadcast.zip
-      - name: Discord notification (O)
-        if: github.ref == 'refs/heads/master'
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_O }}
-        with:
-          args: ':new: OreBroadcast が更新されました: https://github.com/SiroPlugins/OreBroadcast'
-      - name: Send generated files to Discord (O)
-        uses: sinshutu/upload-to-discord@master
-        if: github.ref == 'refs/heads/master'
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK_O }}
-        with:
-          args: OreBroadcast.zip
+          name: Package
+          path: target
