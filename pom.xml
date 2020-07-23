@@ -4,7 +4,7 @@
 
     <groupId>be.bendem.bukkit</groupId>
     <artifactId>OreBroadcast</artifactId>
-    <version>6.0</version>
+    <version>6.1</version>
 
     <name>OreBroadcast</name>
     <url>https://github.com/SiroPlugins/OreBroadcast</url>
@@ -67,8 +67,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>10</source>
-                    <target>10</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
