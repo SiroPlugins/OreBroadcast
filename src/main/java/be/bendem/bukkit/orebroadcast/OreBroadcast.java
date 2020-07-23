@@ -11,14 +11,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public class OreBroadcast extends JavaPlugin {
     private static OreBroadcast instance;
 
-    private final List<Material> oreList =
-            List.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE,
-                    Material.LAPIS_ORE, Material.EMERALD_ORE, Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE, Material.NETHER_GOLD_ORE);
+    private final Set<Material> oreList =
+            Set.of(Material.COAL_ORE, Material.IRON_ORE, Material.GOLD_ORE, Material.REDSTONE_ORE, Material.LAPIS_ORE, Material.EMERALD_ORE, 
+                    Material.DIAMOND_ORE, Material.NETHER_QUARTZ_ORE, Material.NETHER_GOLD_ORE, Material.ANCIENT_DEBRIS);
 
     public OreBroadcast() {
         instance = this;
